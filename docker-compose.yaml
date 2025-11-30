@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  db:
+    build: ./db
+    container_name: db_service
+    volumes:
+      - dbdata:/data
+
+  ui:
+    build: ./ui
+    container_name: ui_service
+    ports:
+      - "5000:5000"
+    volumes:
+      - dbdata:/data
+    depends_on:
+      - db
+
+volumes:
+  dbdata:
+
