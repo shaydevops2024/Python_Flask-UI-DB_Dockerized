@@ -1,14 +1,8 @@
 version: "3.9"
 
 services:
-  db:
-    build: ./db
-    container_name: db_service
-    volumes:
-      - dbdata:/data
-
   ui:
-    build: ./ui
+    build: ./UI
     container_name: ui_service
     ports:
       - "5000:5000"
@@ -16,6 +10,13 @@ services:
       - dbdata:/data
     depends_on:
       - db
+
+  db:
+    build: ./DB
+    container_name: db_service
+    volumes:
+      - dbdata:/data
+    command: sleep infinity
 
 volumes:
   dbdata:

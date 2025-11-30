@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Docker UI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        input {
+            padding: 8px;
+            width: 250px;
+        }
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        #values-box {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #aaa;
+            width: 350px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Docker UI → SQLite DB</h2>
+
+<input id="inputText" placeholder="Enter value..." />
+<button onclick="addValue()">Add</button>
+
+<h3>Stored Values:</h3>
+<div id="values-box">Loading...</div>
+
+<script>
+async function loadValues() {
+    const res = await fetch("/list");
+    const data = await res.json();
+
+    let html = "";
+    data.forEach(item => {
+        html += `<div><b>${item.id}</b> — ${item.value} <small>(${item.timestamp})</small></div>`;
+    });
+
+    document.getElementById("values-box").innerHTML = html || "No data yet.";
+}
+
+async function addValue() {
+    const text = document.getElementById("inputText").value;
+    if (!text.trim()) return alert("Please enter a value");
+
+    await fetch("/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ value: text })
+    });
+
+    document.getElementById("inputText").value = "";
+    loadValues();
+}
+
+loadValues();
+</script>
+
+</body>
+</html>
+
